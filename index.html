@@ -8,12 +8,23 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
-      background: #f5f5f5;
+      background: #f4f4f4;
+    }
+    h1 {
+      background: #2d5be3;
+      color: white;
+      display: inline-block;
+      padding: 15px 25px;
+      border-radius: 10px;
     }
     #resultado {
-      font-size: 24px;
       margin-top: 30px;
+      font-size: 24px;
       font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -21,34 +32,36 @@
 
 <h1>🎁 Amigo Invisible 🎁</h1>
 
-<div id="resultado">Cargando...</div>
+<div id="resultado"></div>
 
 <script>
-/* 🔒 ASIGNACIÓN FIJA (NO CAMBIA) */
-const asignaciones = {
-  "pili_tia": "Roberto",
-  "antonio": "Anne",
-  "anne": "Juan padre",
-  "juan_junior": "Carlota",
-  "juan_padre": "Azucena",
-  "carlota": "Abuela Pili",
-  "carolina": "Pili (tía)",
-  "azucena": "Antonio",
-  "roberto": "Carolina",
-  "abuela_pili": "Juan Junior"
-};
+  // 🔐 ASIGNACIONES SECRETAS (no se repiten)
+  const asignaciones = {
+    "pili": "Roberto",
+    "antonio": "Carlota",
+    "anne": "Juan Junior",
+    "juan_junior": "Azucena",
+    "juan_padre": "Carolina",
+    "carlota": "Anne",
+    "carolina": "Abuela Pili",
+    "azucena": "Juan padre",
+    "roberto": "Pili (tía)",
+    "abuela_pili": "Antonio"
+  };
 
-/* 📌 LEER QUIÉN ES DESDE LA URL */
-const params = new URLSearchParams(window.location.search);
-const quien = params.get("quien");
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-const div = document.getElementById("resultado");
+  const resultadoDiv = document.getElementById("resultado");
 
-if (!quien || !asignaciones[quien]) {
-  div.innerText = "❌ Enlace no válido";
-} else {
-  div.innerText = "🎁 Te ha tocado: " + asignaciones[quien] + " 🤫";
-}
+  if (!id || !asignaciones[id]) {
+    resultadoDiv.innerHTML = "<span class='error'>❌ Enlace no válido</span>";
+  } else {
+    resultadoDiv.innerHTML = `
+      🤫 Tu amigo invisible es:<br><br>
+      🎁 <strong>${asignaciones[id]}</strong>
+    `;
+  }
 </script>
 
 </body>
