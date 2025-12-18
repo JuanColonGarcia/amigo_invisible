@@ -8,23 +8,25 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
-      background: #f4f4f4;
     }
     h1 {
-      background: #2d5be3;
-      color: white;
-      display: inline-block;
-      padding: 15px 25px;
-      border-radius: 10px;
-    }
-    #resultado {
-      margin-top: 30px;
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 36px;
     }
     .error {
       color: red;
-      font-size: 18px;
+      font-size: 22px;
+      margin-top: 20px;
+    }
+    .ok {
+      font-size: 26px;
+      margin-top: 30px;
+      font-weight: bold;
+    }
+    button {
+      font-size: 20px;
+      padding: 12px 20px;
+      margin-top: 25px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -32,36 +34,72 @@
 
 <h1>🎁 Amigo Invisible 🎁</h1>
 
-<div id="resultado"></div>
+<div id="contenido"></div>
 
 <script>
-  // 🔐 ASIGNACIONES SECRETAS (no se repiten)
-  const asignaciones = {
-    "pili": "Roberto",
-    "antonio": "Carlota",
-    "anne": "Juan Junior",
-    "juan_junior": "Azucena",
-    "juan_padre": "Carolina",
-    "carlota": "Anne",
-    "carolina": "Abuela Pili",
-    "azucena": "Juan padre",
-    "roberto": "Pili (tía)",
-    "abuela_pili": "Antonio"
-  };
+/* ====== PARTICIPANTES ====== */
+const participantes = {
+  "pili_tia": "Pili (tía)",
+  "antonio": "Antonio",
+  "anne": "Anne",
+  "juan_junior": "Juan Junior",
+  "juan_padre": "Juan padre",
+  "carlota": "Carlota",
+  "carolina": "Carolina",
+  "azucena": "Azucena",
+  "roberto": "Roberto",
+  "abuela_pili": "Abuela Pili"
+};
 
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+const nombres = Object.values(participantes);
 
-  const resultadoDiv = document.getElementById("resultado");
+/* ====== ASIGNACIÓN ÚNICA ====== */
+function generarAsignacion() {
+  let copia;
+  do {
+    copia = [...nombres].sort(() => Math.random() - 0.5);
+  } while (copia.some((n, i) => n === nombres[i]));
 
-  if (!id || !asignaciones[id]) {
-    resultadoDiv.innerHTML = "<span class='error'>❌ Enlace no válido</span>";
+  const resultado = {};
+  nombres.forEach((n, i) => resultado[n] = copia[i]);
+  return resultado;
+}
+
+/* ====== CARGA ====== */
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const cont = document.getElementById("contenido");
+
+if (!id || !participantes[id]) {
+  cont.innerHTML = `<div class="error">❌ Enlace no válido</div>`;
+} else {
+  const persona = participantes[id];
+  const usado = localStorage.getItem("usado_" + id);
+
+  if (usado) {
+    cont.innerHTML = `<div class="error">❌ Este enlace ya ha sido usado</div>`;
   } else {
-    resultadoDiv.innerHTML = `
-      🤫 Tu amigo invisible es:<br><br>
-      🎁 <strong>${asignaciones[id]}</strong>
+    let asignacion = localStorage.getItem("asignacion_global");
+    if (!asignacion) {
+      asignacion = generarAsignacion();
+      localStorage.setItem("asignacion_global", JSON.stringify(asignacion));
+    } else {
+      asignacion = JSON.parse(asignacion);
+    }
+
+    cont.innerHTML = `
+      <p>Hola <strong>${persona}</strong></p>
+      <button onclick="mostrar()">Ver mi amigo invisible</button>
+      <div id="resultado"></div>
     `;
+
+    window.mostrar = () => {
+      document.getElementById("resultado").innerHTML =
+        `<div class="ok">🎁 Te ha tocado:<br><br>${asignacion[persona]}</div>`;
+      localStorage.setItem("usado_" + id, "true");
+    };
   }
+}
 </script>
 
 </body>
