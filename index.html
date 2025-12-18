@@ -5,111 +5,76 @@
   <title>Amigo Invisible</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px;
+      padding: 40px;
     }
-    select, button {
-      font-size: 18px;
-      padding: 10px;
-      margin-top: 10px;
-    }
+    h1 { margin-bottom: 20px; }
     #resultado {
-      margin-top: 20px;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
 
 <h1>🎁 Amigo Invisible 🎁</h1>
-
-<p>Selecciona tu nombre (solo una vez):</p>
-
-<select id="persona">
-  <option value="">-- Elige tu nombre --</option>
-  <option>Pili (tía)</option>
-  <option>Antonio</option>
-  <option>Anne</option>
-  <option>Juan Junior</option>
-  <option>Juan padre</option>
-  <option>Carlota</option>
-  <option>Carolina</option>
-  <option>Azucena</option>
-  <option>Roberto</option>
-  <option>Abuela Pili</option>
-</select>
-
-<br>
-<button id="boton" onclick="sortear()">Ver mi amigo invisible</button>
-
-<div id="resultado"></div>
+<div id="contenido"></div>
 
 <script>
 const personas = [
-  "Pili (tía)",
-  "Antonio",
-  "Anne",
-  "Juan Junior",
-  "Juan padre",
-  "Carlota",
-  "Carolina",
-  "Azucena",
-  "Roberto",
-  "Abuela Pili"
+  "pili (tía)",
+  "antonio",
+  "anne",
+  "juan junior",
+  "juan padre",
+  "carlota",
+  "carolina",
+  "azucena",
+  "roberto",
+  "abuela pili"
 ];
 
-// 🔐 Cargar o generar asignaciones
-let asignaciones = JSON.parse(localStorage.getItem("asignaciones"));
+const params = new URLSearchParams(window.location.search);
+const usuario = params.get("user");
 
-if (!asignaciones) {
-  asignaciones = generarAsignaciones();
-  localStorage.setItem("asignaciones", JSON.stringify(asignaciones));
-}
+if (!usuario || !personas.includes(usuario.toLowerCase())) {
+  document.getElementById("contenido").innerHTML =
+    "<p>❌ Enlace no válido</p>";
+} else {
+  let asignaciones = JSON.parse(localStorage.getItem("amigoInvisible"));
 
-// 👁️ Comprobar si ya participó
-const yaVisto = localStorage.getItem("yaVisto");
-if (yaVisto) {
-  document.getElementById("resultado").innerText =
-    "❌ Ya has participado.\nNo puedes volver a ver el resultado.";
-  bloquear();
+  if (!asignaciones) {
+    asignaciones = generarAsignaciones();
+    localStorage.setItem("amigoInvisible", JSON.stringify(asignaciones));
+  }
+
+  const resultadoUsuario = asignaciones[usuario.toLowerCase()];
+
+  document.getElementById("contenido").innerHTML = `
+    <p>Hola <strong>${usuario}</strong> 👋</p>
+    <div id="resultado">
+      🎁 Te ha tocado: <br><br>
+      👉 <strong>${resultadoUsuario}</strong>
+    </div>
+    <p style="margin-top:20px">🤫 No se lo digas a nadie</p>
+  `;
 }
 
 function generarAsignaciones() {
-  let copia;
+  let copia = [...personas];
+  let resultado = {};
+
   do {
-    copia = [...personas].sort(() => Math.random() - 0.5);
+    copia.sort(() => Math.random() - 0.5);
   } while (copia.some((p, i) => p === personas[i]));
 
-  let resultado = {};
-  personas.forEach((p, i) => resultado[p] = copia[i]);
+  personas.forEach((p, i) => {
+    resultado[p] = copia[i];
+  });
+
   return resultado;
-}
-
-function sortear() {
-  const persona = document.getElementById("persona").value;
-
-  if (!persona) {
-    alert("Selecciona tu nombre");
-    return;
-  }
-
-  if (localStorage.getItem("yaVisto")) {
-    alert("Ya has participado");
-    return;
-  }
-
-  document.getElementById("resultado").innerText =
-    "🎁 Te ha tocado: " + asignaciones[persona] + " 🤫";
-
-  localStorage.setItem("yaVisto", "true");
-  bloquear();
-}
-
-function bloquear() {
-  document.getElementById("persona").disabled = true;
-  document.getElementById("boton").disabled = true;
 }
 </script>
 
