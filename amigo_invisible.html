@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Amigo Invisible</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 30px;
+    }
+    select, button {
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎁 Amigo Invisible 🎁</h1>
+
+<p>Selecciona tu nombre (solo una vez):</p>
+
+<select id="persona">
+  <option value="">-- Elige tu nombre --</option>
+  <option>Pili (tía)</option>
+  <option>Antonio</option>
+  <option>Anne</option>
+  <option>Juan Junior</option>
+  <option>Juan padre</option>
+  <option>Carlota</option>
+  <option>Carolina</option>
+  <option>Azucena</option>
+  <option>Roberto</option>
+  <option>Abuela Pili</option>
+</select>
+
+<br>
+<button id="boton" onclick="sortear()">Ver mi amigo invisible</button>
+
+<div id="resultado"></div>
+
+<script>
+const personas = [
+  "Pili (tía)",
+  "Antonio",
+  "Anne",
+  "Juan Junior",
+  "Juan padre",
+  "Carlota",
+  "Carolina",
+  "Azucena",
+  "Roberto",
+  "Abuela Pili"
+];
+
+// 🔐 Cargar o generar asignaciones
+let asignaciones = JSON.parse(localStorage.getItem("asignaciones"));
+
+if (!asignaciones) {
+  asignaciones = generarAsignaciones();
+  localStorage.setItem("asignaciones", JSON.stringify(asignaciones));
+}
+
+// 👁️ Comprobar si ya participó
+const yaVisto = localStorage.getItem("yaVisto");
+if (yaVisto) {
+  document.getElementById("resultado").innerText =
+    "❌ Ya has participado.\nNo puedes volver a ver el resultado.";
+  bloquear();
+}
+
+function generarAsignaciones() {
+  let copia;
+  do {
+    copia = [...personas].sort(() => Math.random() - 0.5);
+  } while (copia.some((p, i) => p === personas[i]));
+
+  let resultado = {};
+  personas.forEach((p, i) => resultado[p] = copia[i]);
+  return resultado;
+}
+
+function sortear() {
+  const persona = document.getElementById("persona").value;
+
+  if (!persona) {
+    alert("Selecciona tu nombre");
+    return;
+  }
+
+  if (localStorage.getItem("yaVisto")) {
+    alert("Ya has participado");
+    return;
+  }
+
+  document.getElementById("resultado").innerText =
+    "🎁 Te ha tocado: " + asignaciones[persona] + " 🤫";
+
+  localStorage.setItem("yaVisto", "true");
+  bloquear();
+}
+
+function bloquear() {
+  document.getElementById("persona").disabled = true;
+  document.getElementById("boton").disabled = true;
+}
+</script>
+
+</body>
+</html>
