@@ -6,60 +6,68 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    h1 { font-size: 36px; }
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,.15);
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 { margin-bottom: 20px; }
     .resultado {
-      margin-top: 30px;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
+      margin-top: 20px;
     }
     .error {
       color: red;
-      font-size: 22px;
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
 
-<h1>🎁 Amigo Invisible 🎁</h1>
-
-<div id="contenido"></div>
+<div class="card" id="contenido"></div>
 
 <script>
-/* ===============================
-   RESULTADOS FIJOS (NO MIRES)
-   =============================== */
 const resultados = {
-  "pili_tia": "Juan Junior",
-  "antonio": "Carlota",
-  "anne": "Roberto",
-  "juan_junior": "Carolina",
-  "juan_padre": "Azucena",
-  "carlota": "Pili (tía)",
-  "carolina": "Antonio",
-  "azucena": "Abuela Pili",
-  "roberto": "Juan padre",
-  "abuela_pili": "Anne"
+  "pili_tia": "Roberto",
+  "antonio": "Azucena",
+  "anne": "Juan padre",
+  "juan_junior": "Carlota",
+  "juan_padre": "Carolina",
+  "carlota": "Abuela Pili",
+  "carolina": "Pili (tía)",
+  "azucena": "Anne",
+  "roberto": "Antonio",
+  "abuela_pili": "Juan Junior"
 };
 
-/* ===============================
-   LÓGICA (NO TOCAR)
-   =============================== */
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 const contenedor = document.getElementById("contenido");
 
 if (!id || !resultados[id]) {
-  contenedor.innerHTML =
-    '<div class="error">❌ Enlace no válido</div>';
+  contenedor.innerHTML = `
+    <h1>🎁 Amigo Invisible 🎁</h1>
+    <div class="error">❌ Enlace no válido</div>
+  `;
 } else {
-  contenedor.innerHTML =
-    `<div class="resultado">
+  contenedor.innerHTML = `
+    <h1>🎁 Amigo Invisible 🎁</h1>
+    <div class="resultado">
       🤫 Te ha tocado:<br><br>
-      🎁 <strong>${resultados[id]}</strong>
-    </div>`;
+      🎁 ${resultados[id]}
+    </div>
+  `;
 }
 </script>
 
