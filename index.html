@@ -7,60 +7,60 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
+      background: #f7f7f7;
     }
-    h1 { font-size: 36px; }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 { margin-bottom: 20px; }
     .resultado {
-      margin-top: 30px;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
-    }
-    .error {
-      color: red;
-      font-size: 22px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-<h1>🎁 Amigo Invisible 🎁</h1>
-
-<div id="contenido"></div>
+<div class="card">
+  <h1>🎁 Amigo Invisible 🎁</h1>
+  <div id="contenido"></div>
+</div>
 
 <script>
-/* ===============================
-   RESULTADOS FIJOS (NO MIRES)
-   =============================== */
-const resultados = {
-  "pili_tia": "Roberto",
-  "antonio": "Azucena",
-  "anne": "Juan padre",
-  "juan_junior": "Carlota",
-  "juan_padre": "Carolina",
-  "carlota": "Abuela Pili",
-  "carolina": "Pili (tía)",
-  "azucena": "Anne",
-  "roberto": "Antonio",
-  "abuela_pili": "Juan Junior"
-};
+  const resultados = {
+    "pili": "Roberto",
+    "antonio": "Anne",
+    "anne": "Juan padre",
+    "juanjunior": "Abuela Pili",
+    "juanpadre": "Carlota",
+    "carlota": "Carolina",
+    "carolina": "Azucena",
+    "azucena": "Juan Junior",
+    "roberto": "Pili (tía)",
+    "abuelapili": "Antonio"
+  };
 
-/* ===============================
-   LÓGICA (NO TOCAR)
-   =============================== */
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-const contenedor = document.getElementById("contenido");
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-if (!id || !resultados[id]) {
-  contenedor.innerHTML =
-    '<div class="error">❌ Enlace no válido</div>';
-} else {
-  contenedor.innerHTML =
-    `<div class="resultado">
-      🤫 Te ha tocado:<br><br>
-      🎁 <strong>${resultados[id]}</strong>
-    </div>`;
-}
+  const div = document.getElementById("contenido");
+
+  if (!id || !resultados[id]) {
+    div.innerHTML = "<p>❌ Enlace no válido</p>";
+  } else {
+    div.innerHTML = `
+      <p>Este es tu amigo invisible:</p>
+      <div class="resultado">🎄 ${resultados[id]} 🎄</div>
+      <p style="margin-top:20px;">🤫 No se lo digas a nadie</p>
+    `;
+  }
 </script>
 
 </body>
