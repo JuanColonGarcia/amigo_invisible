@@ -7,26 +7,17 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
     }
-    h1 {
-      font-size: 36px;
+    h1 { font-size: 36px; }
+    .resultado {
+      margin-top: 30px;
+      font-size: 26px;
+      font-weight: bold;
     }
     .error {
       color: red;
       font-size: 22px;
-      margin-top: 20px;
-    }
-    .ok {
-      font-size: 26px;
-      margin-top: 30px;
-      font-weight: bold;
-    }
-    button {
-      font-size: 20px;
-      padding: 12px 20px;
-      margin-top: 25px;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -37,68 +28,38 @@
 <div id="contenido"></div>
 
 <script>
-/* ====== PARTICIPANTES ====== */
-const participantes = {
-  "pili_tia": "Pili (tía)",
-  "antonio": "Antonio",
-  "anne": "Anne",
-  "juan_junior": "Juan Junior",
-  "juan_padre": "Juan padre",
-  "carlota": "Carlota",
-  "carolina": "Carolina",
-  "azucena": "Azucena",
-  "roberto": "Roberto",
-  "abuela_pili": "Abuela Pili"
+/* ===============================
+   RESULTADOS FIJOS (NO MIRES)
+   =============================== */
+const resultados = {
+  "pili_tia": "Roberto",
+  "antonio": "Azucena",
+  "anne": "Juan padre",
+  "juan_junior": "Carlota",
+  "juan_padre": "Carolina",
+  "carlota": "Abuela Pili",
+  "carolina": "Pili (tía)",
+  "azucena": "Anne",
+  "roberto": "Antonio",
+  "abuela_pili": "Juan Junior"
 };
 
-const nombres = Object.values(participantes);
-
-/* ====== ASIGNACIÓN ÚNICA ====== */
-function generarAsignacion() {
-  let copia;
-  do {
-    copia = [...nombres].sort(() => Math.random() - 0.5);
-  } while (copia.some((n, i) => n === nombres[i]));
-
-  const resultado = {};
-  nombres.forEach((n, i) => resultado[n] = copia[i]);
-  return resultado;
-}
-
-/* ====== CARGA ====== */
+/* ===============================
+   LÓGICA (NO TOCAR)
+   =============================== */
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
-const cont = document.getElementById("contenido");
+const contenedor = document.getElementById("contenido");
 
-if (!id || !participantes[id]) {
-  cont.innerHTML = `<div class="error">❌ Enlace no válido</div>`;
+if (!id || !resultados[id]) {
+  contenedor.innerHTML =
+    '<div class="error">❌ Enlace no válido</div>';
 } else {
-  const persona = participantes[id];
-  const usado = localStorage.getItem("usado_" + id);
-
-  if (usado) {
-    cont.innerHTML = `<div class="error">❌ Este enlace ya ha sido usado</div>`;
-  } else {
-    let asignacion = localStorage.getItem("asignacion_global");
-    if (!asignacion) {
-      asignacion = generarAsignacion();
-      localStorage.setItem("asignacion_global", JSON.stringify(asignacion));
-    } else {
-      asignacion = JSON.parse(asignacion);
-    }
-
-    cont.innerHTML = `
-      <p>Hola <strong>${persona}</strong></p>
-      <button onclick="mostrar()">Ver mi amigo invisible</button>
-      <div id="resultado"></div>
-    `;
-
-    window.mostrar = () => {
-      document.getElementById("resultado").innerHTML =
-        `<div class="ok">🎁 Te ha tocado:<br><br>${asignacion[persona]}</div>`;
-      localStorage.setItem("usado_" + id, "true");
-    };
-  }
+  contenedor.innerHTML =
+    `<div class="resultado">
+      🤫 Te ha tocado:<br><br>
+      🎁 <strong>${resultados[id]}</strong>
+    </div>`;
 }
 </script>
 
