@@ -8,73 +8,46 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
+      background: #f5f5f5;
     }
-    h1 { margin-bottom: 20px; }
     #resultado {
       font-size: 24px;
-      font-weight: bold;
       margin-top: 30px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
 <h1>🎁 Amigo Invisible 🎁</h1>
-<div id="contenido"></div>
+
+<div id="resultado">Cargando...</div>
 
 <script>
-const personas = [
-  "pili (tía)",
-  "antonio",
-  "anne",
-  "juan junior",
-  "juan padre",
-  "carlota",
-  "carolina",
-  "azucena",
-  "roberto",
-  "abuela pili"
-];
+/* 🔒 ASIGNACIÓN FIJA (NO CAMBIA) */
+const asignaciones = {
+  "pili_tia": "Roberto",
+  "antonio": "Anne",
+  "anne": "Juan padre",
+  "juan_junior": "Carlota",
+  "juan_padre": "Azucena",
+  "carlota": "Abuela Pili",
+  "carolina": "Pili (tía)",
+  "azucena": "Antonio",
+  "roberto": "Carolina",
+  "abuela_pili": "Juan Junior"
+};
 
+/* 📌 LEER QUIÉN ES DESDE LA URL */
 const params = new URLSearchParams(window.location.search);
-const usuario = params.get("user");
+const quien = params.get("quien");
 
-if (!usuario || !personas.includes(usuario.toLowerCase())) {
-  document.getElementById("contenido").innerHTML =
-    "<p>❌ Enlace no válido</p>";
+const div = document.getElementById("resultado");
+
+if (!quien || !asignaciones[quien]) {
+  div.innerText = "❌ Enlace no válido";
 } else {
-  let asignaciones = JSON.parse(localStorage.getItem("amigoInvisible"));
-
-  if (!asignaciones) {
-    asignaciones = generarAsignaciones();
-    localStorage.setItem("amigoInvisible", JSON.stringify(asignaciones));
-  }
-
-  const resultadoUsuario = asignaciones[usuario.toLowerCase()];
-
-  document.getElementById("contenido").innerHTML = `
-    <p>Hola <strong>${usuario}</strong> 👋</p>
-    <div id="resultado">
-      🎁 Te ha tocado: <br><br>
-      👉 <strong>${resultadoUsuario}</strong>
-    </div>
-    <p style="margin-top:20px">🤫 No se lo digas a nadie</p>
-  `;
-}
-
-function generarAsignaciones() {
-  let copia = [...personas];
-  let resultado = {};
-
-  do {
-    copia.sort(() => Math.random() - 0.5);
-  } while (copia.some((p, i) => p === personas[i]));
-
-  personas.forEach((p, i) => {
-    resultado[p] = copia[i];
-  });
-
-  return resultado;
+  div.innerText = "🎁 Te ha tocado: " + asignaciones[quien] + " 🤫";
 }
 </script>
 
